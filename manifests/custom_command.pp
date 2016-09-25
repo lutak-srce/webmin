@@ -12,7 +12,7 @@ define webmin::custom_command (
   if is_integer($id) {
     $cc_filename = $id
   } else {
-    $cc_filename = inline_template('<% require \'zlib\'; crc32=Zlib::crc32(title)%><%= crc32 %>')
+    $cc_filename = inline_template('<% require \'zlib\'; crc32=Zlib::crc32(@title)%><%= crc32 %>')
   }
 
   file { "/etc/webmin/custom/${cc_filename}.cmd":

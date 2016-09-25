@@ -27,6 +27,22 @@ class webmin (
     $file_ensure    = absent
   }
 
+  File {
+    ensure  => file,
+    owner   => root,
+    group   => root,
+    mode    => '0600',
+    require => Package['webmin'],
+    notify  => Service['webmin'],
+  }
+  Concat {
+    owner   => root,
+    group   => root,
+    mode    => '0600',
+    require => Package['webmin'],
+    notify  => Service['webmin'],
+  }
+
   ### Module code
   package { 'webmin' :
     ensure => $package_ensure,
@@ -34,28 +50,16 @@ class webmin (
   }
 
   file { '/etc/webmin/miniserv.conf':
-    ensure  => file,
-    owner   => root,
-    group   => root,
-    mode    => '0600',
     content => template('webmin/miniserv.conf.erb'),
-    require => Package['webmin'],
   }
 
   service { 'webmin':
-    ensure    => running,
-    enable    => true,
-    subscribe => File['/etc/webmin/miniserv.conf'],
+    ensure => running,
+    enable => true,
   }
-
 
   # webmin.acl
-  concat { '/etc/webmin/webmin.acl':
-    owner  => root,
-    group  => root,
-    mode   => '0600',
-    notify => Service['webmin'],
-  }
+  concat { '/etc/webmin/webmin.acl': }
   ::concat::fragment { 'webmin_acl:header':
     target => '/etc/webmin/webmin.acl',
     source => 'puppet:///modules/webmin/webmin.acl',
@@ -63,18 +67,11 @@ class webmin (
   }
 
   # miniserv.users
-  concat { '/etc/webmin/miniserv.users':
-    owner  => root,
-    group  => root,
-    mode   => '0600',
-    notify => Service['webmin'],
-  }
+  concat { '/etc/webmin/miniserv.users': }
   ::concat::fragment { 'miniserv_users:header':
     target => '/etc/webmin/miniserv.users',
     source => 'puppet:///modules/webmin/miniserv.users',
     order  => '100',
   }
-
-
 
 }
