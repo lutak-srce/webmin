@@ -88,6 +88,15 @@ define webmin::module::acl::file (
   $button_ext      = 'on',
 ) {
 
+  if ! defined(File['/etc/webmin/file']) {
+    file { '/etc/webmin/file':
+      ensure => directory,
+      owner  => root,
+      group  => bin,
+      mode   => '0611',
+    }
+  }
+
   file { "/etc/webmin/file/${user}.acl":
     ensure  => file,
     owner   => root,
