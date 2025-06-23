@@ -9,7 +9,7 @@ define webmin::custom_command (
 
   # Webmin checks if custom command passes '\d+.cmd'
   # regex, and loads it only if it does
-  if is_integer($id) {
+  if ( $id =~ Integer ) {
     $cc_filename = $id
   } else {
     $cc_filename = inline_template('<% require \'zlib\'; crc32=Zlib::crc32(@title)%><%= crc32 %>')
